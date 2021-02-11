@@ -1,7 +1,7 @@
 #Pamela Ramírez González #Código: 201822262
 #Manuel Gallegos Bustamante #Código: 201719942
-#Análisis y procesamiento de imágenes: Proyecto1 Entrega1
-#Se importan librerías que se utilizarán para el desarrollo del laboratorio
+#Análisis y procesamiento de imágenes: Proyecto1 Entrega2
+##Se importan librerías que se utilizarán para el desarrollo del laboratorio
 from skimage.filters import threshold_otsu
 import nibabel
 from scipy.io import loadmat
@@ -13,37 +13,6 @@ import requests
 from skimage.color import rgb2gray
 import matplotlib.pyplot as plt
 
-image_url="https://estaticos.muyinteresante.es/uploads/images/article/57a2ef2a5cafe82d7b8b4567/elefante_0.jpg" # se asigna a una variable la url de la imagen que se trabajará en la primera parte del laboratorio
-r=requests.get(image_url) # se accede a la imagen para su descarga por medio de la url con requests.get
-with open("Elefantes", "wb") as f: # se trabaja con f como la abreviación para abrir un archivo para escritura "Elefantes"
-	f.write(r.content) #se escribe con .write en el archivo previamente mencionado el contenido de la descarga de la imagen realizado previamente con .content
-carga_imagen=io.imread("Elefantes") # se carga la imagen del archivo creado con io.imread
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-# se crea una figura VisualizaciónAnotaciones la cual contiene un supplot de 3x2 para la visualización de las diferentes anotaciones y segmentaciones que indica el enunciado
-plt.figure("VisualizaciónAnotaciones")
-plt.subplot(3,2,1) # para cada subplot se indican como 1er parámetro el número de filas, como 2do parámetro el número de columnas y como 3er parámetro el índice en el cual irá la imagen
-plt.title("Imagen a color") # Para cada una de las imágenes se inserta el título con plt.title, se realiza la visualización de la imágen con plt.imshow y se cancela la visualización de los ejes con plt.axis("off")
-plt.imshow(carga_imagen) # imagen original a color
-plt.axis("off")
-plt.subplot(3,2,3)
-plt.title("Anotación Clasificación")
-plt.imshow(io.imread("Clasificacion.png")) # se carga la imagen correspondiente a la anotación de clasificación con io.imread
-plt.axis("off")
-plt.subplot(3,2,4)
-plt.title("Anotación Detección")
-plt.axis("off")
-plt.imshow(io.imread("Deteccion.jpeg"))# se carga la imagen correspondiente a la anotación de detección con io.imread
-plt.subplot(3,2,5)
-plt.title("Anotación Segmentación \nSemántica")
-plt.imshow(io.imread("Seg_Semantica.jpeg")) # se carga la imagen correspondiente a la segmentación semántica con io.imread
-plt.axis("off")
-plt.subplot(3,2,6)
-plt.title("Anotación Segmentación \nde Instancias")
-plt.imshow(io.imread("Seg_Instancias.jpeg"))# se carga la imagen correspondiente a la segmentación de instancias con io.imread
-plt.axis("off")
-plt.tight_layout() #se utiliza plt.tight_layout() para evitar que se sobrepongan títulos y se ajusten las imágenes
-plt.show() # visualizar la figura con plt.show
-plt.savefig("VisualizaciónAnotaciones",Bbox_inches="tight") # se guarda la figura indicando como 2do parámetro Bbox_inches="tight" para evitar que los bordes blancos sean muy gruesos
 input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
 monedaURL="https://web.stanford.edu/class/ee368/Handouts/Lectures/Examples/11-Edge-Detection/Hough_Transform_Circles/coins.png"  # se asigna a una variable la url de la imagen que se trabajará en la segunda parte del laboratorio
 monedas = requests.get(monedaURL) # se accede a la imagen para su descarga por medio de la url con requests.get
@@ -51,6 +20,7 @@ with open("Monedas", "wb") as f: # se trabaja con f como la abreviación para ab
 	f.write(monedas.content) #se escribe con .write en el archivo previamente mencionado el contenido de la descarga de la imagen realizado previamente con .content
 monedas = io.imread("Monedas") # se carga la imagen del archivo creado con io.imread
 vectorColor = monedas.flatten()  #se realiza un .flatten() de la imagen en escala de grises para que se trabaje en una dimensión
+"""
 plt.figure("HistogramaMonedas") # se crea figura "HistogramaMonedas" con un subplot de 1x2 para almacenar la imagen original y su respectivo histograma
 plt.subplot(1,2,1) # para cada subplot se indican como 1er parámetro el número de filas, como 2do parámetro el número de columnas y como 3er parámetro el índice en el cual irá la imagen o histograma
 plt.imshow(monedas,cmap="gray") # se visualiza la imagen con plt.imshow indicando como segundo parámetro el mapa de color para la visualización el cual en este caso es "gray"
@@ -61,7 +31,7 @@ plt.hist(vectorColor,bins=256) # para realizar el histograma se trabaja con la i
 plt.title('Histograma imagen monedas')
 plt.tight_layout() #se utiliza plt.tight_layout() para evitar que se sobrepongan títulos y se ajusten las imágenes
 plt.show() # visualizar la figura con plt.show
-#plt.savefig("HistogramaMonedas",Bbox_inches="tight")
+"""
 #input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
 #umbral de binarización de acuerdo al método de Otsu
 binOtsu=threshold_otsu(monedas) # calculo del umbral por método Otsu con función threshold_otsu
@@ -112,6 +82,7 @@ plt.imshow(monedas_copia, cmap='gray')
 plt.axis('off')
 plt.show()
 """
+"""
 input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
 #subplot para máscaras con segmentaciones en escala de grises
 plt.figure("MascarasySegmentaciones") # se crea figua con subplot de 2x4 para las distintas máscaras binarias generadas anteriormente y sus respectivas segmentaciones
@@ -150,6 +121,39 @@ plt.axis('off')
 plt.tight_layout() #se utiliza plt.tight_layout() para evitar que se sobrepongan títulos y se ajusten las imágenes
 plt.show() # visualizar la figura con plt.show
 #input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
+"""
+
+#se define función para hacer el cálculo del índice de Jaccard
+def Jaccard_index(masca_binaria,anotacion):
+	"""
+	Función que realiza el cálculo del índice de Jaccard de una márcara binaria y su respectiva anotación que deben tener el mismo tamaño. El índice se calcula con la división de la intersección sobre la unión.
+	:param masca_binaria: máscara binaria producto de una segmentación generada por cualquier método
+	:param anotacion: anotación de la correspondiente para calcular el índice de Jaccard entre ésta y la máscara binaria ingresada por parámetro
+	:return: índice de Jaccard calculado
+	"""
+	interseccion=0
+	union=0
+	for i in range(len(masca_binaria)):
+		for j in range(len(masca_binaria[0])):
+			if masca_binaria[i][j]==1 and anotacion[i][j]==1:
+				interseccion+=1
+				union+=1
+			elif masca_binaria[i][j]==1 or anotacion[i][j]==1:
+				union+=1
+	indice_Jaccard=interseccion/union
+	return indice_Jaccard
+
+
+
+
+
+
+
+
+
+
+
+
 #PROBLEMA BIOMÉDICO
 archivosresonancias=glob.glob(os.path.join("Heart_Data","Data","*.nii.gz")) #se obtiene una lista de los archivos por medio de glob.glos de la ruta formada por os.path.join como los dos primeros parámetros se indican las carpetas en la cual están los archivos y como tercer parámeto se indica que la lista será de todos los archivos que terminen (tengan el formato) .nii.gz
 info = {} # se crea diccionario vacío para almacenar el nombre de los tres pacientes de las resonancias junto con los valores del número de filas, columnas y cortes que tiene cada una de estas resonancias
@@ -275,5 +279,7 @@ for i in range(len(vol3[0])):# recorrido para visualización eje y
 
 ##
 
+"""
 dato = " "
 dato.
+"""
