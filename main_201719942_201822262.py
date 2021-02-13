@@ -125,7 +125,7 @@ plt.show() # visualizar la figura con plt.show
 """
 
 #se define función para hacer el cálculo del índice de Jaccard
-def Jaccard_index(masca_binaria,anotacion):
+def Jaccard_index(masck_binaria,anotacion):
 	"""
 	Función que realiza el cálculo del índice de Jaccard de una márcara binaria y su respectiva anotación que deben tener el mismo tamaño. El índice se calcula con la división de la intersección sobre la unión.
 	:param masca_binaria: máscara binaria producto de una segmentación generada por cualquier método
@@ -134,12 +134,12 @@ def Jaccard_index(masca_binaria,anotacion):
 	"""
 	interseccion=0
 	union=0
-	for i in range(len(masca_binaria)):
-		for j in range(len(masca_binaria[0])):
-			if masca_binaria[i][j]==1 and anotacion[i][j]==1:
+	for i in range(len(masck_binaria)):
+		for j in range(len(masck_binaria[0])):
+			if masck_binaria[i][j]==1 and anotacion[i][j]==1:
 				interseccion+=1
 				union+=1
-			elif masca_binaria[i][j]==1 or anotacion[i][j]==1:
+			elif masck_binaria[i][j]==1 or anotacion[i][j]==1:
 				union+=1
 	indice_Jaccard=interseccion/union
 	return indice_Jaccard
@@ -147,7 +147,7 @@ def Jaccard_index(masca_binaria,anotacion):
 carga_anotación=loadmat("coins_gt.mat")
 matriz_anotacion=carga_anotación["gt"]
 #pruebas
-"""
+#"""
 print("Otsu")
 print(Jaccard_index(monedas_binOtsu,matriz_anotacion))
 print(jaccard_score(monedas_binOtsu.flatten(),matriz_anotacion.flatten()))
@@ -160,7 +160,7 @@ print(jaccard_score(monedas_umbral175.flatten(),matriz_anotacion.flatten()))
 print("Umbral rango")
 print(Jaccard_index(monedas_copia,matriz_anotacion))
 print(jaccard_score(monedas_copia.flatten(),matriz_anotacion.flatten()))
-"""
+#"""
 ##PROBLEMA BIOMÉDICO
 archivosresonancias=glob.glob(os.path.join("Heart_Data","Data","*.nii.gz")) #se obtiene una lista de los archivos por medio de glob.glos de la ruta formada por os.path.join como los dos primeros parámetros se indican las carpetas en la cual están los archivos y como tercer parámeto se indica que la lista será de todos los archivos que terminen (tengan el formato) .nii.gz
 archivosanotaciones=glob.glob(os.path.join("Heart_Data","GroundTruth","*.nii.gz")) #se obtiene una lista de los archivos por medio de glob.glos de la ruta formada por os.path.join como los dos primeros parámetros se indican las carpetas en la cual están los archivos y como tercer parámeto se indica que la lista será de todos los archivos que terminen (tengan el formato) .nii.gz
@@ -283,10 +283,79 @@ v1c3_umbralArb = umbral_65a250(vol1corte3) # máscasa binaria del corte 3 del vo
 v2c3_umbralArb = umbral_65a250(vol2corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
 v3c3_umbralArb = umbral_65a250(vol3corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
 
+#cálculo índice de Jaccard con función creada previamente, para cada uno de los cortes elegidos  de cada volumen. Se indica como 1er parámetro la máscara de binarización para cada método de binarización y, como 2do parámetro, la anotación a la que corresponde al corte y volumen
+v1c1_iJaccardOtsu=Jaccard_index(v1c1_binOtsu,vol1_anotacion1)
+v2c1_iJaccardOtsu=Jaccard_index(v2c1_binOtsu,vol2_anotacion1)
+v3c1_iJaccardOtsu=Jaccard_index(v3c1_binOtsu,vol3_anotacion1)
+v1c2_iJaccardOtsu=Jaccard_index(v1c2_binOtsu,vol1_anotacion2)
+v2c2_iJaccardOtsu=Jaccard_index(v2c2_binOtsu,vol2_anotacion2)
+v3c2_iJaccardOtsu=Jaccard_index(v3c2_binOtsu,vol3_anotacion2)
+v1c3_iJaccardOtsu=Jaccard_index(v1c3_binOtsu,vol1_anotacion3)
+v2c3_iJaccardOtsu=Jaccard_index(v2c3_binOtsu,vol2_anotacion3)
+v3c3_iJaccardOtsu=Jaccard_index(v3c3_binOtsu,vol3_anotacion3)
 
+v1c1_iJaccardP60=Jaccard_index(v1c1_percentil60,vol1_anotacion1)
+v2c1_iJaccardP60=Jaccard_index(v2c1_percentil60,vol2_anotacion1)
+v3c1_iJaccardP60=Jaccard_index(v3c1_percentil60,vol3_anotacion1)
+v1c2_iJaccardP60=Jaccard_index(v1c2_percentil60,vol1_anotacion2)
+v2c2_iJaccardP60=Jaccard_index(v2c2_percentil60,vol2_anotacion2)
+v3c2_iJaccardP60=Jaccard_index(v3c2_percentil60,vol3_anotacion2)
+v1c3_iJaccardP60=Jaccard_index(v1c3_percentil60,vol1_anotacion3)
+v2c3_iJaccardP60=Jaccard_index(v2c3_percentil60,vol2_anotacion3)
+v3c3_iJaccardP60=Jaccard_index(v3c3_percentil60,vol3_anotacion3)
+
+v1c1_iJaccardU175=Jaccard_index(v1c1_umbral175,vol1_anotacion1)
+v2c1_iJaccardU175=Jaccard_index(v2c1_umbral175,vol2_anotacion1)
+v3c1_iJaccardU175=Jaccard_index(v3c1_umbral175,vol3_anotacion1)
+v1c2_iJaccardU175=Jaccard_index(v1c2_umbral175,vol1_anotacion2)
+v2c2_iJaccardU175=Jaccard_index(v2c2_umbral175,vol2_anotacion2)
+v3c2_iJaccardU175=Jaccard_index(v3c2_umbral175,vol3_anotacion2)
+v1c3_iJaccardU175=Jaccard_index(v1c3_umbral175,vol1_anotacion3)
+v2c3_iJaccardU175=Jaccard_index(v2c3_umbral175,vol2_anotacion3)
+v3c3_iJaccardU175=Jaccard_index(v3c3_umbral175,vol3_anotacion3)
+
+v1c1_iJaccardUArb=Jaccard_index(v1c1_umbralArb,vol1_anotacion1)
+v2c1_iJaccardUArb=Jaccard_index(v2c1_umbralArb,vol2_anotacion1)
+v3c1_iJaccardUArb=Jaccard_index(v3c1_umbralArb,vol3_anotacion1)
+v1c2_iJaccardUArb=Jaccard_index(v1c2_umbralArb,vol1_anotacion2)
+v2c2_iJaccardUArb=Jaccard_index(v2c2_umbralArb,vol2_anotacion2)
+v3c2_iJaccardUArb=Jaccard_index(v3c2_umbralArb,vol3_anotacion2)
+v1c3_iJaccardUArb=Jaccard_index(v1c3_umbralArb,vol1_anotacion3)
+v2c3_iJaccardUArb=Jaccard_index(v2c3_umbralArb,vol2_anotacion3)
+v3c3_iJaccardUArb=Jaccard_index(v3c3_umbralArb,vol3_anotacion3)
 ##
-
-"""
-dato = " "
-dato.
-"""
+plt.figure("Segmentaciones")
+plt.subplot(4,2,1)
+plt.title("Otsu vol1 corte1")
+plt.imshow(v1c1_binOtsu,cmap="gray")
+plt.axis("off")
+plt.subplot(4,2,2)
+plt.title("Otsu vol3 corte1")
+plt.imshow(v3c1_binOtsu,cmap="gray")
+plt.axis("off")
+plt.subplot(4,2,3)
+plt.title("Percentil60 vol1 corte1")
+plt.imshow(v1c1_percentil60,cmap="gray")
+plt.axis("off")
+plt.subplot(4,2,4)
+plt.title("Percentil60 vol3 corte1")
+plt.imshow(v3c1_percentil60,cmap="gray")
+plt.axis("off")
+plt.subplot(4,2,5)
+plt.title("Umbral175 vol1 corte1")
+plt.imshow(v1c1_umbral175,cmap="gray")
+plt.axis("off")
+plt.subplot(4,2,6)
+plt.title("Umbral175 vol3 corte1")
+plt.imshow(v3c1_umbral175,cmap="gray")
+plt.axis("off")
+plt.subplot(4,2,7)
+plt.title("Umbral arbitrario vol1 corte1")
+plt.imshow(v1c1_umbralArb,cmap="gray")
+plt.axis("off")
+plt.subplot(4,2,8)
+plt.title("Umbral arbitrario vol3 corte1")
+plt.imshow(v3c1_umbralArb,cmap="gray")
+plt.axis("off")
+plt.tight_layout()
+plt.show()
