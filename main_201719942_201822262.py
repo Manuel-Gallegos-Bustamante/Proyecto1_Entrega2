@@ -10,6 +10,7 @@ import glob
 import numpy as np
 import skimage.io as io
 import requests
+from sklearn.metrics import jaccard_score
 from skimage.color import rgb2gray
 import matplotlib.pyplot as plt
 
@@ -72,7 +73,7 @@ monedas_copia = monedas.copy() # se crea una copia de la imagen modenas
 for i in range(0, len(monedas_copia)): # se realiza un recorrido por las filas de la imagen
 	for j in range(0, len(monedas_copia[i])): # se realiza un recorrido por las columnas de la imagen
 		if monedas_copia[i][j] > 65 and monedas_copia[i][j] < 250: # Se selecciona un umbral de 65-250 para realizar la binarización de la imagen. Por esta razón se crea una condición en la cual si x pixel (indicado como una posición ij de la matriz de la imagen) es mayor al límite inferior del umbral arbitrario escogido y si es menor al límite superior
-			monedas_copia[i][j] = 255 # se cumplirse la condición se asigna al pixel (posición) el color blanco, es decir 255
+			monedas_copia[i][j] = 1 # se cumplirse la condición se asigna al pixel (posición) el color blanco, es decir 1 para que quede la matriz sea binaria
 		else: # si el pixel no se encuentra dentro del rango de umbrales establecido
 			monedas_copia[i][j] = 0 # se asigna a ese pixel el color negro, es decir 0
 """
@@ -143,19 +144,26 @@ def Jaccard_index(masca_binaria,anotacion):
 	indice_Jaccard=interseccion/union
 	return indice_Jaccard
 
-
-
-
-
-
-
-
-
-
-
-
-#PROBLEMA BIOMÉDICO
+carga_anotación=loadmat("coins_gt.mat")
+matriz_anotacion=carga_anotación["gt"]
+#pruebas
+"""
+print("Otsu")
+print(Jaccard_index(monedas_binOtsu,matriz_anotacion))
+print(jaccard_score(monedas_binOtsu.flatten(),matriz_anotacion.flatten()))
+print("Percentil60")
+print(Jaccard_index(monedas_percentil60,matriz_anotacion))
+print(jaccard_score(monedas_percentil60.flatten(),matriz_anotacion.flatten()))
+print("Unbral175")
+print(Jaccard_index(monedas_umbral175,matriz_anotacion))
+print(jaccard_score(monedas_umbral175.flatten(),matriz_anotacion.flatten()))
+print("Umbral rango")
+print(Jaccard_index(monedas_copia,matriz_anotacion))
+print(jaccard_score(monedas_copia.flatten(),matriz_anotacion.flatten()))
+"""
+##PROBLEMA BIOMÉDICO
 archivosresonancias=glob.glob(os.path.join("Heart_Data","Data","*.nii.gz")) #se obtiene una lista de los archivos por medio de glob.glos de la ruta formada por os.path.join como los dos primeros parámetros se indican las carpetas en la cual están los archivos y como tercer parámeto se indica que la lista será de todos los archivos que terminen (tengan el formato) .nii.gz
+archivosanotaciones=glob.glob(os.path.join("Heart_Data","GroundTruth","*.nii.gz")) #se obtiene una lista de los archivos por medio de glob.glos de la ruta formada por os.path.join como los dos primeros parámetros se indican las carpetas en la cual están los archivos y como tercer parámeto se indica que la lista será de todos los archivos que terminen (tengan el formato) .nii.gz
 info = {} # se crea diccionario vacío para almacenar el nombre de los tres pacientes de las resonancias junto con los valores del número de filas, columnas y cortes que tiene cada una de estas resonancias
 for i in archivosresonancias: # se realiza recorrido para todos los archivos de la lista previamente creada. donde i sería la ruta para cada archivo
 	carga = nibabel.load(i) # Se carga cada uno de los archivos con nibabel.load
@@ -163,119 +171,118 @@ for i in archivosresonancias: # se realiza recorrido para todos los archivos de 
 	if paciente not in info: # se verifica que el nombre del paciente no esté en el dict previamente creado
 		x, y = carga.shape # accediendo al tamaño que tiene el archivo se asigna a x el número de filas y a y el número de columnas que tiene la resonancia de este paciente
 		info[paciente] = {'filas':x, 'columnas':y,'cortes':int(carga.header['slice_end'])} # se una llave para el dict con el nombre del paciente la cual tiene como valor otro dict cuyas llaves corresponden al número de filas y columnas y como última llave el número de cortes al cual se accede con el atributo 'slice_end' con el método header y se convierte a entero
-	#print(carga) #se visualizan los atributos del archivo
-	#Atributo identificar paciente -> intent_name     : b'Patient 3'
-	#Atributo identificar #total cortes -> slice_end       : 35
-	#Atributo identificar #corte -> descrip         : b'Slice 1'
-	#Atributo resolución corte->  dim             : [  2 512 512   1   1   1   1   1]
 #Se inicializan tres variables de 3 dimensiones las cuales corresponden a las resonancias de cada paciente por lo cual se llama la llave de cada paciente en el dict para cada paciente y el valor la llave que se desea tenga cada dimensión
 vol1=np.zeros([info['Patient 12']['filas'], info['Patient 12']['columnas'],info['Patient 12']['cortes']]) # variable para Patient 12
 vol2=np.zeros([info['Patient 14']['filas'], info['Patient 14']['columnas'],info['Patient 14']['cortes']]) # variable para Patient 14
 vol3=np.zeros([info['Patient 3']['filas'], info['Patient 3']['columnas'],info['Patient 3']['cortes']])# variable para Patient 13
+vol1_anotacion=np.zeros([info['Patient 12']['filas'], info['Patient 12']['columnas'],info['Patient 12']['cortes']]) # variable para Patient 12
+vol2_anotacion=np.zeros([info['Patient 14']['filas'], info['Patient 14']['columnas'],info['Patient 14']['cortes']]) # variable para Patient 14
+vol3_anotacion=np.zeros([info['Patient 3']['filas'], info['Patient 3']['columnas'],info['Patient 3']['cortes']])# variable para Patient 13
 #print(vol1.shape, vol2.shape, vol3.shape) # se visualizan dimensiones de variables creadas
-for i in archivosresonancias: # se realiza recorrido para todos los archivos de la lista previamente creada. donde i sería la ruta para cada archivo
-	carga = nibabel.load(i)# Se carga cada uno de los archivos con nibabel.load
+for i in range(1,len(archivosresonancias)+1): # se realiza recorrido para todos los archivos de la lista previamente creada. donde i sería la ruta para cada archivo
+	carga = nibabel.load(os.path.join("Heart_Data","Data",str(i)+".nii.gz"))# Se carga cada uno de los archivos con nibabel.load
+	cargaA = nibabel.load(os.path.join("Heart_Data","GroundTruth",str(i)+".nii.gz"))  # Se carga cada uno de los archivos con nibabel.load
 	paciente = (str(carga.header['intent_name']).replace("b'",""))[:-1] # se crea variable que almacenará el nombre del paciente en formato de str. Para esto se accede al atributo'intent_name' con el uso del método .header. Además se reemplazan caracteres del str que no se desean mantener como lo son b´ con el método .replace el cual recibe como parámetro el str que se desea reemplazar y como 2do parámetro el str por el cual se cambiará. Por último se quita la comilla del final del str con [:-1]
 	corte = int((str(carga.header['descrip']).replace("b'Slice ", ""))[:-1]) # se crea variable que almacenará el número de corte en formato de int. Para esto se accede al atributo'intent_name' el cual inicialmente con el uso del método .header se toma como str . Además se reemplazan caracteres del str que no se desean mantener como lo son b´Slice  con el método .replace el cual recibe como parámetro el str que se desea reemplazar y como 2do parámetro el str por el cual se cambiará. Por último se quita la comilla del final del str con [:-1]
 	if paciente == 'Patient 12':# se crean serie de condicionales para verificar cuál es el nombre del paciente del corte evaluado en el archivo dado por la ruta i
 		vol1[:,:,corte] = carga.get_fdata() # En cada uno de los condicionales si se cumple su condición: Se añade la información del corte con el método.get_fdata() al volumen creado para cada paciente, dicha información se asigna para todas las filas y columnas del índice dado por el número del corte
+		vol1_anotacion[:, :, corte] = cargaA.get_fdata()
 	elif paciente == 'Patient 14':
 		vol2[:,:,corte] = carga.get_fdata()
+		vol2_anotacion[:, :, corte] = cargaA.get_fdata()
 	elif paciente == 'Patient 3':
 		vol3[:,:,corte] = carga.get_fdata()
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-#visualización de resonancia para paciente 12 (vol1) en los diferentes ejes cada una de estas visualizaciones se realiza activando el modo interactivo con plt.ion, plt.show y generando un recorrido sobre la longitud del eje que se desea mostrar
-plt.ion()
-plt.show()
-for i in range(len(vol1[0,0])): # recorrido para visualización eje z
-	plt.imshow(vol1[:,:,i], cmap='gray') # se visualiza la imagen con el colormap "gray" desactivando los ejes (axis("off")) y "dibujando" sobre la figura el corte de cada iteración junto con su respectivo título
-	plt.axis('off')
-	plt.title(f'Resonancia paciente 12, eje z, corte {i}')
-	plt.draw()
-	plt.pause(0.001) # se realiza una pausa de 0.001 segundos para porteriormente cerrar la visualización del corte
-	plt.clf()
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-plt.ion()
-plt.show()
-for i in range(len(vol1)): # recorrido para visualización eje x
-	plt.imshow(vol1[i,:,:], cmap='gray')# se visualiza la imagen con el colormap "gray" desactivando los ejes (axis("off")) y "dibujando" sobre la figura el corte de cada iteración junto con su respectivo título
-	plt.axis('off')
-	plt.title(f'Resonancia paciente 12, eje x, corte {i}')
-	plt.draw()
-	plt.pause(0.001) # se realiza una pausa de 0.001 segundos para porteriormente cerrar la visualización del corte
-	plt.clf()
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-plt.ion()
-plt.show()
-for i in range(len(vol1[0])):# recorrido para visualización eje y
-	plt.imshow(vol1[:,i,:], cmap='gray') # se visualiza la imagen con el colormap "gray" desactivando los ejes (axis("off")) y "dibujando" sobre la figura el corte de cada iteración junto con su respectivo título
-	plt.axis('off')
-	plt.title(f'Resonancia paciente 12, eje y, corte {i}')
-	plt.draw()
-	plt.pause(0.001) # se realiza una pausa de 0.001 segundos para porteriormente cerrar la visualización del corte
-	plt.clf()
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-#visualización de resonancia para paciente 14 (vol2) en los diferentes ejes. cada una de estas visualizaciones se realiza activando el modo interactivo con plt.ion, plt.show y generando un recorrido sobre la longitud del eje que se desea mostrar
-plt.ion()
-plt.show()
-for i in range(len(vol2[0,0])):# recorrido para visualización eje z
-	plt.imshow(vol2[:,:,i], cmap='gray')# se visualiza la imagen con el colormap "gray" desactivando los ejes (axis("off")) y "dibujando" sobre la figura el corte de cada iteración junto con su respectivo título
-	plt.axis('off')
-	plt.title(f'Resonancia paciente 14, eje z, corte {i}')
-	plt.draw()
-	plt.pause(0.001) # se realiza una pausa de 0.001 segundos para porteriormente cerrar la visualización del corte
-	plt.clf()
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-plt.ion()
-plt.show()
-for i in range(len(vol2)):  # recorrido para visualización eje x
-	plt.imshow(vol2[i, :, :],cmap='gray')  # se visualiza la imagen con el colormap "gray" desactivando los ejes (axis("off")) y "dibujando" sobre la figura el corte de cada iteración junto con su respectivo título
-	plt.axis('off')
-	plt.title(f'Resonancia paciente 14, eje x, corte {i}')
-	plt.draw()
-	plt.pause(0.001)  # se realiza una pausa de 0.001 segundos para porteriormente cerrar la visualización del corte
-	plt.clf()
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-plt.ion()
-plt.show()
-for i in range(len(vol2[0])):  # recorrido para visualización eje y
-	plt.imshow(vol2[:, i, :],cmap='gray')  # se visualiza la imagen con el colormap "gray" desactivando los ejes (axis("off")) y "dibujando" sobre la figura el corte de cada iteración junto con su respectivo título
-	plt.axis('off')
-	plt.title(f'Resonancia paciente 14, eje y, corte {i}')
-	plt.draw()
-	plt.pause(0.001)  # se realiza una pausa de 0.001 segundos para porteriormente cerrar la visualización del corte
-	plt.clf()
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-#visualización de resonancia para paciente 3 (vol3) en los diferentes ejes. cada una de estas visualizaciones se realiza activando el modo interactivo con plt.ion, plt.show y generando un recorrido sobre la longitud del eje que se desea mostrar
-plt.ion()
-plt.show()
-for i in range(len(vol3[0,0])):# recorrido para visualización eje z
-	plt.imshow(vol3[:,:,i], cmap='gray') # se visualiza la imagen con el colormap "gray" desactivando los ejes (axis("off")) y "dibujando" sobre la figura el corte de cada iteración junto con su respectivo título
-	plt.axis('off')
-	plt.title(f'Resonancia paciente 3, eje z, corte {i}')
-	plt.draw()
-	plt.pause(0.001) # se realiza una pausa de 0.001 segundos para porteriormente cerrar la visualización del corte
-	plt.clf()
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-plt.ion()
-plt.show()
-for i in range(len(vol3)): # recorrido para visualización eje x
-	plt.imshow(vol3[i,:,:], cmap='gray')# se visualiza la imagen con el colormap "gray" desactivando los ejes (axis("off")) y "dibujando" sobre la figura el corte de cada iteración junto con su respectivo título
-	plt.axis('off')
-	plt.title(f'Resonancia paciente 3, eje x, corte {i}')
-	plt.draw()
-	plt.pause(0.001) # se realiza una pausa de 0.001 segundos para porteriormente cerrar la visualización del corte
-	plt.clf()
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-plt.ion()
-plt.show()
-for i in range(len(vol3[0])):# recorrido para visualización eje y
-	plt.imshow(vol3[:,i,:], cmap='gray') # se visualiza la imagen con el colormap "gray" desactivando los ejes (axis("off")) y "dibujando" sobre la figura el corte de cada iteración junto con su respectivo título
-	plt.axis('off')
-	plt.title(f'Resonancia paciente 3, eje y, corte {i}')
-	plt.draw()
-	plt.pause(0.001) # se realiza una pausa de 0.001 segundos para porteriormente cerrar la visualización del corte
-	plt.clf()
+		vol3_anotacion[:, :, corte] = cargaA.get_fdata()
+vol1corte1,vol1_anotacion1=vol1[:,:,15],vol1_anotacion[:,:,15]
+vol2corte1,vol2_anotacion1=vol2[:,:,15],vol2_anotacion[:,:,15]
+vol3corte1,vol3_anotacion1=vol3[:,:,15],vol3_anotacion[:,:,15]
+vol1corte2,vol1_anotacion2=vol1[:,:,28],vol1_anotacion[:,:,28]
+vol2corte2,vol2_anotacion2=vol2[:,:,28],vol2_anotacion[:,:,28]
+vol3corte2,vol3_anotacion2=vol3[:,:,28],vol3_anotacion[:,:,28]
+vol1corte3,vol1_anotacion3=vol1[:,:,7],vol1_anotacion[:,:,7]
+vol2corte3,vol2_anotacion3=vol2[:,:,7],vol2_anotacion[:,:,7]
+vol3corte3,vol3_anotacion3=vol3[:,:,7],vol3_anotacion[:,:,7]
+#máscaras con binarización Otsu
+binOtsu_v1c1=threshold_otsu(vol1corte1) # calculo del umbral por método Otsu con función threshold_otsu
+v1c1_binOtsu=vol1corte1>binOtsu_v1c1 # máscasa binaria del corte 1 del volumen1 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+binOtsu_v2c1=threshold_otsu(vol2corte1) # calculo del umbral por método Otsu con función threshold_otsu
+v2c1_binOtsu=vol2corte1>binOtsu_v2c1 # máscasa binaria del corte 1 del volumen2 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+binOtsu_v3c1=threshold_otsu(vol3corte1) # calculo del umbral por método Otsu con función threshold_otsu
+v3c1_binOtsu=vol3corte1>binOtsu_v3c1 # máscasa binaria del corte 1 del volumen3 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+
+binOtsu_v1c2=threshold_otsu(vol1corte2) # calculo del umbral por método Otsu con función threshold_otsu
+v1c2_binOtsu=vol1corte2>binOtsu_v1c2 # máscasa binaria del corte 2 del volumen1 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+binOtsu_v2c2=threshold_otsu(vol2corte2) # calculo del umbral por método Otsu con función threshold_otsu
+v2c2_binOtsu=vol2corte2>binOtsu_v2c2 # máscasa binaria del corte 2 del volumen2 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+binOtsu_v3c2=threshold_otsu(vol3corte2) # calculo del umbral por método Otsu con función threshold_otsu
+v3c2_binOtsu=vol3corte2>binOtsu_v3c2 # máscasa binaria del corte 2 del volumen3 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+
+binOtsu_v1c3=threshold_otsu(vol1corte3) # calculo del umbral por método Otsu con función threshold_otsu
+v1c3_binOtsu=vol1corte3>binOtsu_v1c3 # máscasa binaria del corte 3 del volumen1 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+binOtsu_v2c3=threshold_otsu(vol2corte3) # calculo del umbral por método Otsu con función threshold_otsu
+v2c3_binOtsu=vol2corte3>binOtsu_v2c3 # máscasa binaria del corte 3 del volumen2 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+binOtsu_v3c3=threshold_otsu(vol3corte3) # calculo del umbral por método Otsu con función threshold_otsu
+v3c3_binOtsu=vol3corte3>binOtsu_v3c3 # máscasa binaria del corte 3 del volumen3 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+#máscaras con binarización por percentil 60
+calculo_percentil60_v1c1=np.percentile(vol1corte1,60) # se calcula el percentil 60 haciendo uso de la función percentile de la librería numpy la cual recibe como 1er parámetro la imagen a la cual se le calculará el percentil y como 2do parámetro el número del percentil que se desea calcular
+v1c1_percentil60=vol1corte1>calculo_percentil60_v1c1 # máscasa binaria del corte 1 del volumen1  haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+calculo_percentil60_v2c1=np.percentile(vol2corte1,60) # se calcula el percentil 60 haciendo uso de la función percentile de la librería numpy la cual recibe como 1er parámetro la imagen a la cual se le calculará el percentil y como 2do parámetro el número del percentil que se desea calcular
+v2c1_percentil60=vol2corte1>calculo_percentil60_v2c1 # máscasa binaria del corte 1 del volumen2  haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+calculo_percentil60_v3c1=np.percentile(vol3corte1,60) # se calcula el percentil 60 haciendo uso de la función percentile de la librería numpy la cual recibe como 1er parámetro la imagen a la cual se le calculará el percentil y como 2do parámetro el número del percentil que se desea calcular
+v3c1_percentil60=vol3corte1>calculo_percentil60_v3c1 # máscasa binaria del corte 1 del volumen3  haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+
+calculo_percentil60_v1c2=np.percentile(vol1corte2,60) # se calcula el percentil 60 haciendo uso de la función percentile de la librería numpy la cual recibe como 1er parámetro la imagen a la cual se le calculará el percentil y como 2do parámetro el número del percentil que se desea calcular
+v1c2_percentil60=vol1corte2>calculo_percentil60_v1c2 # máscasa binaria del corte 2 del volumen1  haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+calculo_percentil60_v2c2=np.percentile(vol2corte2,60) # se calcula el percentil 60 haciendo uso de la función percentile de la librería numpy la cual recibe como 1er parámetro la imagen a la cual se le calculará el percentil y como 2do parámetro el número del percentil que se desea calcular
+v2c2_percentil60=vol2corte2>calculo_percentil60_v2c2 # máscasa binaria del corte 2 del volumen2  haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+calculo_percentil60_v3c2=np.percentile(vol3corte2,60) # se calcula el percentil 60 haciendo uso de la función percentile de la librería numpy la cual recibe como 1er parámetro la imagen a la cual se le calculará el percentil y como 2do parámetro el número del percentil que se desea calcular
+v3c2_percentil60=vol3corte2>calculo_percentil60_v3c2 # máscasa binaria del corte 2 del volumen3  haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+
+calculo_percentil60_v1c3=np.percentile(vol1corte3,60) # se calcula el percentil 60 haciendo uso de la función percentile de la librería numpy la cual recibe como 1er parámetro la imagen a la cual se le calculará el percentil y como 2do parámetro el número del percentil que se desea calcular
+v1c3_percentil60=vol1corte3>calculo_percentil60_v1c3 # máscasa binaria del corte 3 del volumen1  haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+calculo_percentil60_v2c3=np.percentile(vol2corte3,60) # se calcula el percentil 60 haciendo uso de la función percentile de la librería numpy la cual recibe como 1er parámetro la imagen a la cual se le calculará el percentil y como 2do parámetro el número del percentil que se desea calcular
+v2c3_percentil60=vol2corte3>calculo_percentil60_v2c3 # máscasa binaria del corte 3 del volumen2  haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+calculo_percentil60_v3c3=np.percentile(vol3corte3,60) # se calcula el percentil 60 haciendo uso de la función percentile de la librería numpy la cual recibe como 1er parámetro la imagen a la cual se le calculará el percentil y como 2do parámetro el número del percentil que se desea calcular
+v3c3_percentil60=vol3corte3>calculo_percentil60_v3c3 # máscasa binaria del corte 3 del volumen3  haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+#máscara con umbral 175
+v1c1_umbral175 = vol1corte1 > 175 # máscasa binaria del corte 1 del volumen1 haciendo uso del umbral 175. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+v2c1_umbral175 = vol2corte1 > 175 # máscasa binaria del corte 1 del volumen1 haciendo uso del umbral 175. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+v3c1_umbral175 = vol3corte1 > 175 # máscasa binaria del corte 1 del volumen1 haciendo uso del umbral 175. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+
+v1c2_umbral175 = vol1corte2 > 175 # máscasa binaria del corte 2 del volumen1 haciendo uso del umbral 175. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+v2c2_umbral175 = vol2corte2 > 175 # máscasa binaria del corte 2 del volumen1 haciendo uso del umbral 175. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+v3c2_umbral175 = vol3corte2 > 175 # máscasa binaria del corte 2 del volumen1 haciendo uso del umbral 175. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+
+v1c3_umbral175 = vol1corte3 > 175 # máscasa binaria del corte 3 del volumen1 haciendo uso del umbral 175. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+v2c3_umbral175 = vol2corte3 > 175 # máscasa binaria del corte 3 del volumen1 haciendo uso del umbral 175. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+v3c3_umbral175 = vol3corte3 > 175 # máscasa binaria del corte 3 del volumen1 haciendo uso del umbral 175. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
+#máscara con umbral arbitrario
+def umbral_65a250(imagen_antes):
+	"""
+	función para cálculo de binarización por umbral arbitrario de 65-250
+	:param imagen_antes: imagen a la cual se le realizará la bianrización
+	:return: imagen binarizada
+	"""
+	imagen=imagen_antes.copy() # copia de la imagen que entra por parámetro para trabajar la binarización
+	for i in range(0, len(imagen)): # se realiza un recorrido por las filas de la imagen
+		for j in range(0, len(imagen[i])): # se realiza un recorrido por las columnas de la imagen
+			if imagen[i][j] > 65 and monedas_copia[i][j] < 250: # Se selecciona un umbral de 65-250 para realizar la binarización de la imagen. Por esta razón se crea una condición en la cual si x pixel (indicado como una posición ij de la matriz de la imagen) es mayor al límite inferior del umbral arbitrario escogido y si es menor al límite superior
+				imagen[i][j] = 1 # se cumplirse la condición se asigna al pixel (posición) el color blanco, es decir 1 para que quede la matriz sea binaria
+			else: # si el pixel no se encuentra dentro del rango de umbrales establecido
+				imagen[i][j] = 0 # se asigna a ese pixel el color negro, es decir 0
+	return imagen
+v1c1_umbralArb = umbral_65a250(vol1corte1) # máscasa binaria del corte 1 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
+v2c1_umbralArb = umbral_65a250(vol2corte1) # máscasa binaria del corte 1 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
+v3c1_umbralArb = umbral_65a250(vol3corte1) # máscasa binaria del corte 1 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
+
+v1c2_umbralArb = umbral_65a250(vol1corte2) # máscasa binaria del corte 2 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
+v2c2_umbralArb = umbral_65a250(vol2corte2) # máscasa binaria del corte 2 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
+v3c2_umbralArb = umbral_65a250(vol3corte2) # máscasa binaria del corte 2 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
+
+v1c3_umbralArb = umbral_65a250(vol1corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario
+v2c3_umbralArb = umbral_65a250(vol2corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
+v3c3_umbralArb = umbral_65a250(vol3corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
+
 
 ##
 
