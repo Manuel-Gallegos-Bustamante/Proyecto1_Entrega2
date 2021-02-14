@@ -1,7 +1,7 @@
 #Pamela Ramírez González #Código: 201822262
 #Manuel Gallegos Bustamante #Código: 201719942
 #Análisis y procesamiento de imágenes: Proyecto1 Entrega2
-##Se importan librerías que se utilizarán para el desarrollo del laboratorio
+#Se importan librerías que se utilizarán para el desarrollo del laboratorio
 from skimage.filters import threshold_otsu
 import nibabel
 from scipy.io import loadmat
@@ -21,52 +21,19 @@ with open("Monedas", "wb") as f: # se trabaja con f como la abreviación para ab
 	f.write(monedas.content) #se escribe con .write en el archivo previamente mencionado el contenido de la descarga de la imagen realizado previamente con .content
 monedas = io.imread("Monedas") # se carga la imagen del archivo creado con io.imread
 vectorColor = monedas.flatten()  #se realiza un .flatten() de la imagen en escala de grises para que se trabaje en una dimensión
-"""
-plt.figure("HistogramaMonedas") # se crea figura "HistogramaMonedas" con un subplot de 1x2 para almacenar la imagen original y su respectivo histograma
-plt.subplot(1,2,1) # para cada subplot se indican como 1er parámetro el número de filas, como 2do parámetro el número de columnas y como 3er parámetro el índice en el cual irá la imagen o histograma
-plt.imshow(monedas,cmap="gray") # se visualiza la imagen con plt.imshow indicando como segundo parámetro el mapa de color para la visualización el cual en este caso es "gray"
-plt.title("Imagen monedas") # tanto para el histograma como para la imagen se inserta el título con plt.title
-plt.axis('off') # se quitan los ejes
-plt.subplot(1,2,2)
-plt.hist(vectorColor,bins=256) # para realizar el histograma se trabaja con la imagen en escala de grises vectorizada previamente para que se trabaje en una dimensión. Además se inidica como parámetro bins=256 para que el histograma tenga más divisiones por cada uno de los intermedios entre 0-255 (negro-blanco)
-plt.title('Histograma imagen monedas')
-plt.tight_layout() #se utiliza plt.tight_layout() para evitar que se sobrepongan títulos y se ajusten las imágenes
-plt.show() # visualizar la figura con plt.show
-"""
 #input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
 #umbral de binarización de acuerdo al método de Otsu
 binOtsu=threshold_otsu(monedas) # calculo del umbral por método Otsu con función threshold_otsu
 monedas_binOtsu=monedas>binOtsu # máscasa binaria de la imagen monedas haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
 #print(binOtsu) # visualización del umbral calculado con el método Otsu
-"""
-plt.figure("BinOtsu") # figura de la binarización de la imagen con el método Otsu, se inserta título con plt.title y se visualiza la máscara con plt.imshow con el mapa de color "gray" y se quitan los ejes con plt.axis("off") y se visualiza con plt.show
-plt.title("Binarización de la imagen con Otsu")
-plt.imshow(monedas_binOtsu, cmap="gray")
-plt.axis('off')
-plt.show()
-"""
 #input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
 #binarización con percentil 60
 calculo_percentil60=np.percentile(monedas,60) # se calcula el percentil 60 haciendo uso de la función percentile de la librería numpy la cual recibe como 1er parámetro la imagen a la cual se le calculará el percentil y como 2do parámetro el número del percentil que se desea calcular
 monedas_percentil60=monedas>calculo_percentil60 # máscasa binaria de la imagen monedas haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
 #print(calculo_percentil60) # visualización del umbral calculado con el percentil 60
-"""
-plt.figure("Percentil 60") # figura de la binarización de la imagen con el percentil 60, se inserta título con plt.title y se visualiza la máscara con plt.imshow con el mapa de color "gray" y se quitan los ejes con plt.axis("off") y se visualiza con plt.show
-plt.title("Binarización de la imagen con percentil 60")
-plt.imshow(monedas_percentil60, cmap="gray")
-plt.axis('off')
-plt.show()
-"""
 #binarización con umbral = 175
 #input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
 monedas_umbral175 = monedas > 175 # máscasa binaria de la imagen monedas haciendo uso del umbral 175. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
-"""
-plt.figure("Umbral 175") # figura de la binarización de la imagen con el umbral 175,  se inserta título con plt.title y se visualiza la máscara con plt.imshow con el mapa de color "gray" y se quitan los ejes con plt.axis("off") y se visualiza con plt.show
-plt.title("Binarización de la imagen con umbral 175")
-plt.imshow(monedas_umbral175, cmap="gray")
-plt.axis('off')
-plt.show()
-"""
 #input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
 #selección de dos umbrales arbitrarios y establecer rango
 monedas_copia = monedas.copy() # se crea una copia de la imagen modenas
@@ -76,54 +43,6 @@ for i in range(0, len(monedas_copia)): # se realiza un recorrido por las filas d
 			monedas_copia[i][j] = 1 # se cumplirse la condición se asigna al pixel (posición) el color blanco, es decir 1 para que quede la matriz sea binaria
 		else: # si el pixel no se encuentra dentro del rango de umbrales establecido
 			monedas_copia[i][j] = 0 # se asigna a ese pixel el color negro, es decir 0
-"""
-plt.figure("Umbral arbitrario")# figura de la binarización de la imagen con el rango de umbrales arbitrario,  se inserta título con plt.title y se visualiza la máscara con plt.imshow con el mapa de color "gray" y se quitan los ejes con plt.axis("off") y se visualiza con plt.show
-plt.title("Umbral arbitrario") 
-plt.imshow(monedas_copia, cmap='gray')
-plt.axis('off')
-plt.show()
-"""
-"""
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-#subplot para máscaras con segmentaciones en escala de grises
-plt.figure("MascarasySegmentaciones") # se crea figua con subplot de 2x4 para las distintas máscaras binarias generadas anteriormente y sus respectivas segmentaciones
-plt.subplot(2,4,1) # para cada subplot se indican como 1er parámetro el número de filas, como 2do parámetro el número de columnas y como 3er parámetro el índice en el cual irá la máscara o segmentación
-plt.imshow(monedas_binOtsu,cmap="gray") # se visualiza cada una de las máscaras y segmentaciones con imshow y el mapa de color "gray". Además, se le inserta el título con .tittle y se le quitan los ejes con axis("off)
-plt.title("Máscara 1:\nOtsu")
-plt.axis('off')
-plt.subplot(2,4,2)
-plt.imshow(monedas_percentil60,cmap="gray")
-plt.title("Máscara 2:\nPercentil 60")
-plt.axis('off')
-plt.subplot(2,4,3)
-plt.imshow(monedas_umbral175,cmap="gray")
-plt.title("Máscara 3: Umbral\narbitrario 175")
-plt.axis('off')
-plt.subplot(2,4,4)
-plt.imshow(monedas_copia,cmap="gray")
-plt.title("Máscara 4: Umbral\nrango 65-250")
-plt.axis('off')
-plt.subplot(2,4,5)
-plt.imshow(monedas_binOtsu*monedas,cmap="gray") # para realizar las segmentaciones se realiza una multiplicación (elemento por elemento) de la imagen original de monedas y de la máscara correspondiente a la segmentación deseada. Lo anterior debido a que como la máscara es binaria (valores de 0 o 1) aquellos pixeles (elementos) que en la máscara tengan un valor de 1 mantendran su nivel de gris mientras que los que tengan un valor de 0 en la máscara binaria tomarán un valor de 0 es decir negro
-plt.title("Segmentación 1:\nOtsu")
-plt.axis('off')
-plt.subplot(2,4,6)
-plt.imshow(monedas_percentil60*monedas,cmap="gray")
-plt.title("Segmentación 2:\nPercentil 60")
-plt.axis('off')
-plt.subplot(2,4,7)
-plt.imshow(monedas*monedas_umbral175,cmap="gray")
-plt.title("Segmentación 3:\nUmbral 175")
-plt.axis('off')
-plt.subplot(2,4,8)
-plt.imshow(monedas_copia * monedas,cmap="gray")
-plt.title("Segmentación 4: Umbral\nrango 65-250")
-plt.axis('off')
-plt.tight_layout() #se utiliza plt.tight_layout() para evitar que se sobrepongan títulos y se ajusten las imágenes
-plt.show() # visualizar la figura con plt.show
-#input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
-"""
-
 #se define función para hacer el cálculo del índice de Jaccard
 def Jaccard_index(masck_binaria,anotacion):
 	"""
@@ -132,36 +51,35 @@ def Jaccard_index(masck_binaria,anotacion):
 	:param anotacion: anotación de la correspondiente para calcular el índice de Jaccard entre ésta y la máscara binaria ingresada por parámetro
 	:return: índice de Jaccard calculado
 	"""
-	interseccion=0
+	interseccion=0 # se inicializan variables para almacenar los valores de intersecci+on y unión
 	union=0
-	for i in range(len(masck_binaria)):
+	for i in range(len(masck_binaria)): # recorrido por las filas y columnas de las matrices que entran por parámetro.
 		for j in range(len(masck_binaria[0])):
-			if masck_binaria[i][j]==1 and anotacion[i][j]==1:
-				interseccion+=1
+			if masck_binaria[i][j]==1 and anotacion[i][j]==1: # se verifica si la posición evaluada tanto en la máscara como en la anotación es 1
+				interseccion+=1 # si se cumple la condición indica que es una intersección y también hace parte de la unión
 				union+=1
-			elif masck_binaria[i][j]==1 or anotacion[i][j]==1:
-				union+=1
-	indice_Jaccard=interseccion/union
+			elif masck_binaria[i][j]==1 or anotacion[i][j]==1: # si la condición previa no se cumple se verifica si alguna de las posiciones es 1
+				union+=1 # de cumplirse la condición indica que es una unión
+	indice_Jaccard=interseccion/union # se calcula el índice después de terminados los recorridos dividiendo la intersección entre la unión
 	return indice_Jaccard
-
-carga_anotación = loadmat("coins_gt.mat")
-matriz_anotacion=carga_anotación["gt"]
+carga_anotación = loadmat("coins_gt.mat") # se carga archivo de anotaciones de la imagen de monedas con loatmat especifícando commo parámetro el archivo
+matriz_anotacion=carga_anotación["gt"] # Se obtiene matriz correspondiente obteniendo la información del atributo "gt"
 #pruebas
-#"""
+#visualización de índices calculados y de índice teoría utilizando función propia de Python jaccard_score de la librería sklearn.metrics
 print("Otsu")
 print(Jaccard_index(monedas_binOtsu,matriz_anotacion))
-print(jaccard_score(monedas_binOtsu.flatten(),matriz_anotacion.flatten()))
+#print(jaccard_score(monedas_binOtsu.flatten(),matriz_anotacion.flatten()))
 print("Percentil60")
 print(Jaccard_index(monedas_percentil60,matriz_anotacion))
-print(jaccard_score(monedas_percentil60.flatten(),matriz_anotacion.flatten()))
+#print(jaccard_score(monedas_percentil60.flatten(),matriz_anotacion.flatten()))
 print("Unbral175")
 print(Jaccard_index(monedas_umbral175,matriz_anotacion))
-print(jaccard_score(monedas_umbral175.flatten(),matriz_anotacion.flatten()))
+#print(jaccard_score(monedas_umbral175.flatten(),matriz_anotacion.flatten()))
 print("Umbral rango")
 print(Jaccard_index(monedas_copia,matriz_anotacion))
-print(jaccard_score(monedas_copia.flatten(),matriz_anotacion.flatten()))
-#"""
-##PROBLEMA BIOMÉDICO
+#print(jaccard_score(monedas_copia.flatten(),matriz_anotacion.flatten()))
+
+#PROBLEMA BIOMÉDICO
 archivosresonancias=glob.glob(os.path.join("Heart_Data","Data","*.nii.gz")) #se obtiene una lista de los archivos por medio de glob.glos de la ruta formada por os.path.join como los dos primeros parámetros se indican las carpetas en la cual están los archivos y como tercer parámeto se indica que la lista será de todos los archivos que terminen (tengan el formato) .nii.gz
 archivosanotaciones=glob.glob(os.path.join("Heart_Data","GroundTruth","*.nii.gz")) #se obtiene una lista de los archivos por medio de glob.glos de la ruta formada por os.path.join como los dos primeros parámetros se indican las carpetas en la cual están los archivos y como tercer parámeto se indica que la lista será de todos los archivos que terminen (tengan el formato) .nii.gz
 info = {} # se crea diccionario vacío para almacenar el nombre de los tres pacientes de las resonancias junto con los valores del número de filas, columnas y cortes que tiene cada una de estas resonancias
@@ -284,7 +202,8 @@ v3c2_umbralArb = umbral_65a250(vol3corte2) # máscasa binaria del corte 2 del vo
 v1c3_umbralArb = umbral_65a250(vol1corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario
 v2c3_umbralArb = umbral_65a250(vol2corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
 v3c3_umbralArb = umbral_65a250(vol3corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
-##
+
+input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
 #cálculo índice de Jaccard con función creada previamente, para cada uno de los cortes elegidos de cada volumen. Se indica como 1er parámetro la máscara de binarización para cada método de binarización y, como 2do parámetro, la anotación a la que corresponde al corte y volumen
 v1c1_iJaccardOtsu=Jaccard_index(v1c1_binOtsu,vol1_anotacion1) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 por el método Otsu
 print(v1c1_iJaccardOtsu) # se imprime el valor del índice
@@ -358,7 +277,7 @@ v2c3_iJaccardUArb=Jaccard_index(v2c3_umbralArb,vol2_anotacion3) # se crea la var
 print(v2c3_iJaccardUArb) # se imprime el valor del índice
 v3c3_iJaccardUArb=Jaccard_index(v3c3_umbralArb,vol3_anotacion3) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 con un umbral arbitrario
 print(v3c3_iJaccardUArb) # se imprime el valor del índice
-##
+input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
 plt.figure("Segmentaciones") # se crea la figura para colocar los sublots con las segmentaciones
 plt.subplot(6,2,1) # para cada subplot se indican como 1er parámetro el número de filas, como 2do parámetro el número de columnas y como 3er parámetro el índice en el cual irá la o segmentación
 plt.title("Vol1 corte1 original") # se visualiza cada una de las máscaras y segmentaciones con imshow y el mapa de color "gray". Además, se le inserta el título con .tittle y se le quitan los ejes con axis("off)
@@ -401,24 +320,12 @@ plt.title("Umbral arbitrario vol3 corte1")
 plt.imshow(v3c1_umbralArb,cmap="gray")
 plt.axis("off")
 plt.subplot(6,2,11)
-plt.title("Corte1 anotación")
+plt.title("Anotación vol1 corte1")
 plt.imshow(vol1_anotacion1,cmap="gray")
 plt.axis("off")
 plt.subplot(6,2,12)
-plt.title("Corte2 anotación")
+plt.title("Anotación vol3 corte1")
 plt.imshow(vol3_anotacion1,cmap="gray")
 plt.axis("off")
 plt.tight_layout()
 plt.show() # se muestra la figura optimizando el espacio con función tight_layout()
-
-##
-plt.figure("HistogramaMonedas") # se crea figura "HistogramaMonedas" con un subplot de 1x2 para almacenar la imagen original y su respectivo histograma
-plt.subplot(1,2,1) # para cada subplot se indican como 1er parámetro el número de filas, como 2do parámetro el número de columnas y como 3er parámetro el índice en el cual irá la imagen o histograma
-plt.imshow(vol1corte1,cmap="gray") # se visualiza la imagen con plt.imshow indicando como segundo parámetro el mapa de color para la visualización el cual en este caso es "gray"
-plt.title("Imagen monedas") # tanto para el histograma como para la imagen se inserta el título con plt.title
-plt.axis('off') # se quitan los ejes
-plt.subplot(1,2,2)
-plt.hist(vol1corte1.flatten(),bins=256) # para realizar el histograma se trabaja con la imagen en escala de grises vectorizada previamente para que se trabaje en una dimensión. Además se inidica como parámetro bins=256 para que el histograma tenga más divisiones por cada uno de los intermedios entre 0-255 (negro-blanco)
-plt.title('Histograma imagen monedas')
-plt.tight_layout() #se utiliza plt.tight_layout() para evitar que se sobrepongan títulos y se ajusten las imágenes
-plt.show()
