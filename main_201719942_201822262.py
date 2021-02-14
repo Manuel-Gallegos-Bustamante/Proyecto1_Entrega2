@@ -199,11 +199,12 @@ vol3corte1,vol3_anotacion1=vol3[:,:,15],vol3_anotacion[:,:,15]
 vol1corte2,vol1_anotacion2=vol1[:,:,28],vol1_anotacion[:,:,28]
 vol2corte2,vol2_anotacion2=vol2[:,:,28],vol2_anotacion[:,:,28]
 vol3corte2,vol3_anotacion2=vol3[:,:,28],vol3_anotacion[:,:,28]
-vol1corte3,vol1_anotacion3=vol1[:,:,7],vol1_anotacion[:,:,7]
-vol2corte3,vol2_anotacion3=vol2[:,:,7],vol2_anotacion[:,:,7]
-vol3corte3,vol3_anotacion3=vol3[:,:,7],vol3_anotacion[:,:,7]
+vol1corte3,vol1_anotacion3=vol1[:,:,25],vol1_anotacion[:,:,25]
+vol2corte3,vol2_anotacion3=vol2[:,:,25],vol2_anotacion[:,:,25]
+vol3corte3,vol3_anotacion3=vol3[:,:,25],vol3_anotacion[:,:,25]
 #máscaras con binarización Otsu
 binOtsu_v1c1=threshold_otsu(vol1corte1) # calculo del umbral por método Otsu con función threshold_otsu
+#print(binOtsu_v1c1)
 v1c1_binOtsu=vol1corte1>binOtsu_v1c1 # máscasa binaria del corte 1 del volumen1 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
 binOtsu_v2c1=threshold_otsu(vol2corte1) # calculo del umbral por método Otsu con función threshold_otsu
 v2c1_binOtsu=vol2corte1>binOtsu_v2c1 # máscasa binaria del corte 1 del volumen2 haciendo uso del umbral calculado previamente. pixeles con valores mayores al umbral toman el valor de 1, de lo contrario toman el valor de 0
@@ -282,7 +283,7 @@ v3c2_umbralArb = umbral_65a250(vol3corte2) # máscasa binaria del corte 2 del vo
 v1c3_umbralArb = umbral_65a250(vol1corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario
 v2c3_umbralArb = umbral_65a250(vol2corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
 v3c3_umbralArb = umbral_65a250(vol3corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
-
+##
 #cálculo índice de Jaccard con función creada previamente, para cada uno de los cortes elegidos  de cada volumen. Se indica como 1er parámetro la máscara de binarización para cada método de binarización y, como 2do parámetro, la anotación a la que corresponde al corte y volumen
 v1c1_iJaccardOtsu=Jaccard_index(v1c1_binOtsu,vol1_anotacion1)
 print(v1c1_iJaccardOtsu)
@@ -298,42 +299,69 @@ v3c2_iJaccardOtsu=Jaccard_index(v3c2_binOtsu,vol3_anotacion2)
 print(v3c2_iJaccardOtsu)
 v1c3_iJaccardOtsu=Jaccard_index(v1c3_binOtsu,vol1_anotacion3)
 print(v1c3_iJaccardOtsu)
-print(jaccard_score(v1c3_binOtsu.flatten(),vol1_anotacion3.flatten()))
+#print(jaccard_score(v1c3_binOtsu.flatten(),vol1_anotacion3.flatten()))
 v2c3_iJaccardOtsu=Jaccard_index(v2c3_binOtsu,vol2_anotacion3)
 print(v2c3_iJaccardOtsu)
-print(jaccard_score(v2c3_binOtsu.flatten(),vol2_anotacion3.flatten()))
+#print(jaccard_score(v2c3_binOtsu.flatten(),vol2_anotacion3.flatten()))
 v3c3_iJaccardOtsu=Jaccard_index(v3c3_binOtsu,vol3_anotacion3)
 print(v3c3_iJaccardOtsu)
-
+print("P60")
 v1c1_iJaccardP60=Jaccard_index(v1c1_percentil60,vol1_anotacion1)
+print(v1c1_iJaccardP60)
 v2c1_iJaccardP60=Jaccard_index(v2c1_percentil60,vol2_anotacion1)
+print(v2c1_iJaccardP60)
 v3c1_iJaccardP60=Jaccard_index(v3c1_percentil60,vol3_anotacion1)
+print(v3c1_iJaccardP60)
 v1c2_iJaccardP60=Jaccard_index(v1c2_percentil60,vol1_anotacion2)
+print(v1c2_iJaccardP60)
 v2c2_iJaccardP60=Jaccard_index(v2c2_percentil60,vol2_anotacion2)
+print(v2c2_iJaccardP60)
 v3c2_iJaccardP60=Jaccard_index(v3c2_percentil60,vol3_anotacion2)
+print(v3c2_iJaccardP60)
 v1c3_iJaccardP60=Jaccard_index(v1c3_percentil60,vol1_anotacion3)
+print(v1c3_iJaccardP60)
 v2c3_iJaccardP60=Jaccard_index(v2c3_percentil60,vol2_anotacion3)
+print(v2c3_iJaccardP60)
 v3c3_iJaccardP60=Jaccard_index(v3c3_percentil60,vol3_anotacion3)
-
+print(v3c3_iJaccardP60)
+print("U175")
 v1c1_iJaccardU175=Jaccard_index(v1c1_umbral175,vol1_anotacion1)
+print(v1c1_iJaccardU175)
 v2c1_iJaccardU175=Jaccard_index(v2c1_umbral175,vol2_anotacion1)
+print(v2c1_iJaccardU175)
 v3c1_iJaccardU175=Jaccard_index(v3c1_umbral175,vol3_anotacion1)
+print(v3c1_iJaccardU175)
 v1c2_iJaccardU175=Jaccard_index(v1c2_umbral175,vol1_anotacion2)
+print(v1c2_iJaccardU175)
 v2c2_iJaccardU175=Jaccard_index(v2c2_umbral175,vol2_anotacion2)
+print(v2c2_iJaccardU175)
 v3c2_iJaccardU175=Jaccard_index(v3c2_umbral175,vol3_anotacion2)
+print(v3c2_iJaccardU175)
 v1c3_iJaccardU175=Jaccard_index(v1c3_umbral175,vol1_anotacion3)
+print(v1c3_iJaccardU175)
 v2c3_iJaccardU175=Jaccard_index(v2c3_umbral175,vol2_anotacion3)
+print(v2c3_iJaccardU175)
 v3c3_iJaccardU175=Jaccard_index(v3c3_umbral175,vol3_anotacion3)
-
+print(v3c3_iJaccardU175)
+print("UArb")
 v1c1_iJaccardUArb=Jaccard_index(v1c1_umbralArb,vol1_anotacion1)
+print(v1c1_iJaccardUArb)
 v2c1_iJaccardUArb=Jaccard_index(v2c1_umbralArb,vol2_anotacion1)
+print(v2c1_iJaccardUArb)
 v3c1_iJaccardUArb=Jaccard_index(v3c1_umbralArb,vol3_anotacion1)
+print(v3c1_iJaccardUArb)
 v1c2_iJaccardUArb=Jaccard_index(v1c2_umbralArb,vol1_anotacion2)
+print(v1c2_iJaccardUArb)
 v2c2_iJaccardUArb=Jaccard_index(v2c2_umbralArb,vol2_anotacion2)
+print(v2c2_iJaccardUArb)
 v3c2_iJaccardUArb=Jaccard_index(v3c2_umbralArb,vol3_anotacion2)
+print(v3c2_iJaccardUArb)
 v1c3_iJaccardUArb=Jaccard_index(v1c3_umbralArb,vol1_anotacion3)
+print(v1c3_iJaccardUArb)
 v2c3_iJaccardUArb=Jaccard_index(v2c3_umbralArb,vol2_anotacion3)
+print(v2c3_iJaccardUArb)
 v3c3_iJaccardUArb=Jaccard_index(v3c3_umbralArb,vol3_anotacion3)
+print(v3c3_iJaccardUArb)
 ##
 plt.figure("Segmentaciones")
 plt.subplot(5,2,1)
@@ -377,4 +405,16 @@ plt.title("Umbral arbitrario vol3 corte1")
 plt.imshow(v3c1_umbralArb,cmap="gray")
 plt.axis("off")
 plt.tight_layout()
+plt.show()
+
+##
+plt.figure("HistogramaMonedas") # se crea figura "HistogramaMonedas" con un subplot de 1x2 para almacenar la imagen original y su respectivo histograma
+plt.subplot(1,2,1) # para cada subplot se indican como 1er parámetro el número de filas, como 2do parámetro el número de columnas y como 3er parámetro el índice en el cual irá la imagen o histograma
+plt.imshow(vol1corte1,cmap="gray") # se visualiza la imagen con plt.imshow indicando como segundo parámetro el mapa de color para la visualización el cual en este caso es "gray"
+plt.title("Imagen monedas") # tanto para el histograma como para la imagen se inserta el título con plt.title
+plt.axis('off') # se quitan los ejes
+plt.subplot(1,2,2)
+plt.hist(vol1corte1.flatten(),bins=256) # para realizar el histograma se trabaja con la imagen en escala de grises vectorizada previamente para que se trabaje en una dimensión. Además se inidica como parámetro bins=256 para que el histograma tenga más divisiones por cada uno de los intermedios entre 0-255 (negro-blanco)
+plt.title('Histograma imagen monedas')
+plt.tight_layout() #se utiliza plt.tight_layout() para evitar que se sobrepongan títulos y se ajusten las imágenes
 plt.show()
