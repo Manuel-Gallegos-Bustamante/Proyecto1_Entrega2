@@ -193,15 +193,16 @@ for i in range(1,len(archivosresonancias)+1): # se realiza recorrido para todos 
 	elif paciente == 'Patient 3':
 		vol3[:,:,corte] = carga.get_fdata()
 		vol3_anotacion[:, :, corte] = cargaA.get_fdata()
-vol1corte1,vol1_anotacion1=vol1[:,:,15],vol1_anotacion[:,:,15]
-vol2corte1,vol2_anotacion1=vol2[:,:,15],vol2_anotacion[:,:,15]
-vol3corte1,vol3_anotacion1=vol3[:,:,15],vol3_anotacion[:,:,15]
-vol1corte2,vol1_anotacion2=vol1[:,:,28],vol1_anotacion[:,:,28]
-vol2corte2,vol2_anotacion2=vol2[:,:,28],vol2_anotacion[:,:,28]
-vol3corte2,vol3_anotacion2=vol3[:,:,28],vol3_anotacion[:,:,28]
-vol1corte3,vol1_anotacion3=vol1[:,:,25],vol1_anotacion[:,:,25]
-vol2corte3,vol2_anotacion3=vol2[:,:,25],vol2_anotacion[:,:,25]
-vol3corte3,vol3_anotacion3=vol3[:,:,25],vol3_anotacion[:,:,25]
+# se definen las variables para almacenar el corte específico de la resonancia y de la anotación respectivamente
+vol1corte1,vol1_anotacion1=vol1[:,:,15],vol1_anotacion[:,:,15] # variables para el corte especificado del paciente 12
+vol2corte1,vol2_anotacion1=vol2[:,:,15],vol2_anotacion[:,:,15] # variables para el corte especificado del paciente 14
+vol3corte1,vol3_anotacion1=vol3[:,:,15],vol3_anotacion[:,:,15] # variables para el corte especificado del paciente 3
+vol1corte2,vol1_anotacion2=vol1[:,:,28],vol1_anotacion[:,:,28] # variables para el corte especificado del paciente 12
+vol2corte2,vol2_anotacion2=vol2[:,:,28],vol2_anotacion[:,:,28] # variables para el corte especificado del paciente 14
+vol3corte2,vol3_anotacion2=vol3[:,:,28],vol3_anotacion[:,:,28] # variables para el corte especificado del paciente 3
+vol1corte3,vol1_anotacion3=vol1[:,:,25],vol1_anotacion[:,:,25] # variables para el corte especificado del paciente 12
+vol2corte3,vol2_anotacion3=vol2[:,:,25],vol2_anotacion[:,:,25] # variables para el corte especificado del paciente 14
+vol3corte3,vol3_anotacion3=vol3[:,:,25],vol3_anotacion[:,:,25] # variables para el corte especificado del paciente 3
 #máscaras con binarización Otsu
 binOtsu_v1c1=threshold_otsu(vol1corte1) # calculo del umbral por método Otsu con función threshold_otsu
 #print(binOtsu_v1c1)
@@ -284,128 +285,131 @@ v1c3_umbralArb = umbral_65a250(vol1corte3) # máscasa binaria del corte 3 del vo
 v2c3_umbralArb = umbral_65a250(vol2corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
 v3c3_umbralArb = umbral_65a250(vol3corte3) # máscasa binaria del corte 3 del volumen1 haciendo uso de la función creada para binarización con umbral arbitrario.
 ##
-#cálculo índice de Jaccard con función creada previamente, para cada uno de los cortes elegidos  de cada volumen. Se indica como 1er parámetro la máscara de binarización para cada método de binarización y, como 2do parámetro, la anotación a la que corresponde al corte y volumen
-v1c1_iJaccardOtsu=Jaccard_index(v1c1_binOtsu,vol1_anotacion1)
-print(v1c1_iJaccardOtsu)
-v2c1_iJaccardOtsu=Jaccard_index(v2c1_binOtsu,vol2_anotacion1)
-print(v2c1_iJaccardOtsu)
-v3c1_iJaccardOtsu=Jaccard_index(v3c1_binOtsu,vol3_anotacion1)
-print(v3c1_iJaccardOtsu)
-v1c2_iJaccardOtsu=Jaccard_index(v1c2_binOtsu,vol1_anotacion2)
-print(v1c2_iJaccardOtsu)
-v2c2_iJaccardOtsu=Jaccard_index(v2c2_binOtsu,vol2_anotacion2)
-print(v2c2_iJaccardOtsu)
-v3c2_iJaccardOtsu=Jaccard_index(v3c2_binOtsu,vol3_anotacion2)
-print(v3c2_iJaccardOtsu)
-v1c3_iJaccardOtsu=Jaccard_index(v1c3_binOtsu,vol1_anotacion3)
-print(v1c3_iJaccardOtsu)
-#print(jaccard_score(v1c3_binOtsu.flatten(),vol1_anotacion3.flatten()))
-v2c3_iJaccardOtsu=Jaccard_index(v2c3_binOtsu,vol2_anotacion3)
-print(v2c3_iJaccardOtsu)
-#print(jaccard_score(v2c3_binOtsu.flatten(),vol2_anotacion3.flatten()))
-v3c3_iJaccardOtsu=Jaccard_index(v3c3_binOtsu,vol3_anotacion3)
-print(v3c3_iJaccardOtsu)
-print("P60")
-v1c1_iJaccardP60=Jaccard_index(v1c1_percentil60,vol1_anotacion1)
-print(v1c1_iJaccardP60)
-v2c1_iJaccardP60=Jaccard_index(v2c1_percentil60,vol2_anotacion1)
-print(v2c1_iJaccardP60)
-v3c1_iJaccardP60=Jaccard_index(v3c1_percentil60,vol3_anotacion1)
-print(v3c1_iJaccardP60)
-v1c2_iJaccardP60=Jaccard_index(v1c2_percentil60,vol1_anotacion2)
-print(v1c2_iJaccardP60)
-v2c2_iJaccardP60=Jaccard_index(v2c2_percentil60,vol2_anotacion2)
-print(v2c2_iJaccardP60)
-v3c2_iJaccardP60=Jaccard_index(v3c2_percentil60,vol3_anotacion2)
-print(v3c2_iJaccardP60)
-v1c3_iJaccardP60=Jaccard_index(v1c3_percentil60,vol1_anotacion3)
-print(v1c3_iJaccardP60)
-v2c3_iJaccardP60=Jaccard_index(v2c3_percentil60,vol2_anotacion3)
-print(v2c3_iJaccardP60)
-v3c3_iJaccardP60=Jaccard_index(v3c3_percentil60,vol3_anotacion3)
-print(v3c3_iJaccardP60)
-print("U175")
-v1c1_iJaccardU175=Jaccard_index(v1c1_umbral175,vol1_anotacion1)
-print(v1c1_iJaccardU175)
-v2c1_iJaccardU175=Jaccard_index(v2c1_umbral175,vol2_anotacion1)
-print(v2c1_iJaccardU175)
-v3c1_iJaccardU175=Jaccard_index(v3c1_umbral175,vol3_anotacion1)
-print(v3c1_iJaccardU175)
-v1c2_iJaccardU175=Jaccard_index(v1c2_umbral175,vol1_anotacion2)
-print(v1c2_iJaccardU175)
-v2c2_iJaccardU175=Jaccard_index(v2c2_umbral175,vol2_anotacion2)
-print(v2c2_iJaccardU175)
-v3c2_iJaccardU175=Jaccard_index(v3c2_umbral175,vol3_anotacion2)
-print(v3c2_iJaccardU175)
-v1c3_iJaccardU175=Jaccard_index(v1c3_umbral175,vol1_anotacion3)
-print(v1c3_iJaccardU175)
-v2c3_iJaccardU175=Jaccard_index(v2c3_umbral175,vol2_anotacion3)
-print(v2c3_iJaccardU175)
-v3c3_iJaccardU175=Jaccard_index(v3c3_umbral175,vol3_anotacion3)
-print(v3c3_iJaccardU175)
-print("UArb")
-v1c1_iJaccardUArb=Jaccard_index(v1c1_umbralArb,vol1_anotacion1)
-print(v1c1_iJaccardUArb)
-v2c1_iJaccardUArb=Jaccard_index(v2c1_umbralArb,vol2_anotacion1)
-print(v2c1_iJaccardUArb)
-v3c1_iJaccardUArb=Jaccard_index(v3c1_umbralArb,vol3_anotacion1)
-print(v3c1_iJaccardUArb)
-v1c2_iJaccardUArb=Jaccard_index(v1c2_umbralArb,vol1_anotacion2)
-print(v1c2_iJaccardUArb)
-v2c2_iJaccardUArb=Jaccard_index(v2c2_umbralArb,vol2_anotacion2)
-print(v2c2_iJaccardUArb)
-v3c2_iJaccardUArb=Jaccard_index(v3c2_umbralArb,vol3_anotacion2)
-print(v3c2_iJaccardUArb)
-v1c3_iJaccardUArb=Jaccard_index(v1c3_umbralArb,vol1_anotacion3)
-print(v1c3_iJaccardUArb)
-v2c3_iJaccardUArb=Jaccard_index(v2c3_umbralArb,vol2_anotacion3)
-print(v2c3_iJaccardUArb)
-v3c3_iJaccardUArb=Jaccard_index(v3c3_umbralArb,vol3_anotacion3)
-print(v3c3_iJaccardUArb)
+#cálculo índice de Jaccard con función creada previamente, para cada uno de los cortes elegidos de cada volumen. Se indica como 1er parámetro la máscara de binarización para cada método de binarización y, como 2do parámetro, la anotación a la que corresponde al corte y volumen
+v1c1_iJaccardOtsu=Jaccard_index(v1c1_binOtsu,vol1_anotacion1) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 por el método Otsu
+print(v1c1_iJaccardOtsu) # se imprime el valor del índice
+v2c1_iJaccardOtsu=Jaccard_index(v2c1_binOtsu,vol2_anotacion1) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 por el método Otsu
+print(v2c1_iJaccardOtsu) # se imprime el valor del índice
+v3c1_iJaccardOtsu=Jaccard_index(v3c1_binOtsu,vol3_anotacion1) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 por el método Otsu
+print(v3c1_iJaccardOtsu) # se imprime el valor del índice
+v1c2_iJaccardOtsu=Jaccard_index(v1c2_binOtsu,vol1_anotacion2) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 por el método Otsu
+print(v1c2_iJaccardOtsu) # se imprime el valor del índice
+v2c2_iJaccardOtsu=Jaccard_index(v2c2_binOtsu,vol2_anotacion2) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 por el método Otsu
+print(v2c2_iJaccardOtsu) # se imprime el valor del índice
+v3c2_iJaccardOtsu=Jaccard_index(v3c2_binOtsu,vol3_anotacion2) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 por el método Otsu
+print(v3c2_iJaccardOtsu) # se imprime el valor del índice
+v1c3_iJaccardOtsu=Jaccard_index(v1c3_binOtsu,vol1_anotacion3) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 por el método Otsu
+print(v1c3_iJaccardOtsu) # se imprime el valor del índice
+v2c3_iJaccardOtsu=Jaccard_index(v2c3_binOtsu,vol2_anotacion3) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 por el método Otsu
+print(v2c3_iJaccardOtsu) # se imprime el valor del índice
+v3c3_iJaccardOtsu=Jaccard_index(v3c3_binOtsu,vol3_anotacion3) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 por el método Otsu
+print(v3c3_iJaccardOtsu) # se imprime el valor del índice
+v1c1_iJaccardP60=Jaccard_index(v1c1_percentil60,vol1_anotacion1) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 por el método del percentil 60
+print(v1c1_iJaccardP60) # se imprime el valor del índice
+v2c1_iJaccardP60=Jaccard_index(v2c1_percentil60,vol2_anotacion1) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 por el método del percentil 60
+print(v2c1_iJaccardP60) # se imprime el valor del índice
+v3c1_iJaccardP60=Jaccard_index(v3c1_percentil60,vol3_anotacion1) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 por el método del percentil 60
+print(v3c1_iJaccardP60) # se imprime el valor del índice
+v1c2_iJaccardP60=Jaccard_index(v1c2_percentil60,vol1_anotacion2) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 por el método del percentil 60
+print(v1c2_iJaccardP60) # se imprime el valor del índice
+v2c2_iJaccardP60=Jaccard_index(v2c2_percentil60,vol2_anotacion2) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 por el método del percentil 60
+print(v2c2_iJaccardP60) # se imprime el valor del índice
+v3c2_iJaccardP60=Jaccard_index(v3c2_percentil60,vol3_anotacion2) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 por el método del percentil 60
+print(v3c2_iJaccardP60) # se imprime el valor del índice
+v1c3_iJaccardP60=Jaccard_index(v1c3_percentil60,vol1_anotacion3) # se crea la variable que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 por el método del percentil 60
+print(v1c3_iJaccardP60) # se imprime el valor del índice
+v2c3_iJaccardP60=Jaccard_index(v2c3_percentil60,vol2_anotacion3)  # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 por el método del percentil 60
+print(v2c3_iJaccardP60) # se imprime el valor del índice
+v3c3_iJaccardP60=Jaccard_index(v3c3_percentil60,vol3_anotacion3) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 por el método del percentil 60
+print(v3c3_iJaccardP60) # se imprime el valor del índice
+v1c1_iJaccardU175=Jaccard_index(v1c1_umbral175,vol1_anotacion1) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 con un umbral de 175
+print(v1c1_iJaccardU175) # se imprime el valor del índice
+v2c1_iJaccardU175=Jaccard_index(v2c1_umbral175,vol2_anotacion1)  # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 con un umbral de 175
+print(v2c1_iJaccardU175) # se imprime el valor del índice
+v3c1_iJaccardU175=Jaccard_index(v3c1_umbral175,vol3_anotacion1)  # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 con un umbral de 175
+print(v3c1_iJaccardU175) # se imprime el valor del índice
+v1c2_iJaccardU175=Jaccard_index(v1c2_umbral175,vol1_anotacion2) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 con un umbral de 175
+print(v1c2_iJaccardU175) # se imprime el valor del índice
+v2c2_iJaccardU175=Jaccard_index(v2c2_umbral175,vol2_anotacion2) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 con un umbral de 175
+print(v2c2_iJaccardU175) # se imprime el valor del índice
+v3c2_iJaccardU175=Jaccard_index(v3c2_umbral175,vol3_anotacion2) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 con un umbral de 175
+print(v3c2_iJaccardU175) # se imprime el valor del índice
+v1c3_iJaccardU175=Jaccard_index(v1c3_umbral175,vol1_anotacion3) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 con un umbral de 175
+print(v1c3_iJaccardU175) # se imprime el valor del índice
+v2c3_iJaccardU175=Jaccard_index(v2c3_umbral175,vol2_anotacion3) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 con un umbral de 175
+print(v2c3_iJaccardU175) # se imprime el valor del índice
+v3c3_iJaccardU175=Jaccard_index(v3c3_umbral175,vol3_anotacion3) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 con un umbral de 175
+print(v3c3_iJaccardU175) # se imprime el valor del índice
+v1c1_iJaccardUArb=Jaccard_index(v1c1_umbralArb,vol1_anotacion1) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 con un umbral arbitrario
+print(v1c1_iJaccardUArb)  # se imprime el valor del índice
+v2c1_iJaccardUArb=Jaccard_index(v2c1_umbralArb,vol2_anotacion1) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 con un umbral arbitrario
+print(v2c1_iJaccardUArb) # se imprime el valor del índice
+v3c1_iJaccardUArb=Jaccard_index(v3c1_umbralArb,vol3_anotacion1) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 con un umbral arbitrario
+print(v3c1_iJaccardUArb) # se imprime el valor del índice
+v1c2_iJaccardUArb=Jaccard_index(v1c2_umbralArb,vol1_anotacion2) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 con un umbral arbitrario
+print(v1c2_iJaccardUArb) # se imprime el valor del índice
+v2c2_iJaccardUArb=Jaccard_index(v2c2_umbralArb,vol2_anotacion2) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 con un umbral arbitrario
+print(v2c2_iJaccardUArb) # se imprime el valor del índice
+v3c2_iJaccardUArb=Jaccard_index(v3c2_umbralArb,vol3_anotacion2) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 con un umbral arbitrario
+print(v3c2_iJaccardUArb) # se imprime el valor del índice
+v1c3_iJaccardUArb=Jaccard_index(v1c3_umbralArb,vol1_anotacion3) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 12 con un umbral arbitrario
+print(v1c3_iJaccardUArb) # se imprime el valor del índice
+v2c3_iJaccardUArb=Jaccard_index(v2c3_umbralArb,vol2_anotacion3) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 14 con un umbral arbitrario
+print(v2c3_iJaccardUArb) # se imprime el valor del índice
+v3c3_iJaccardUArb=Jaccard_index(v3c3_umbralArb,vol3_anotacion3) # se crea la varianle que contiene el valor del índice de Jaccard para el corte especificado del paciente 3 con un umbral arbitrario
+print(v3c3_iJaccardUArb) # se imprime el valor del índice
 ##
-plt.figure("Segmentaciones")
-plt.subplot(5,2,1)
-plt.title("Vol1 corte1 original")
+plt.figure("Segmentaciones") # se crea la figura para colocar los sublots con las segmentaciones
+plt.subplot(6,2,1) # para cada subplot se indican como 1er parámetro el número de filas, como 2do parámetro el número de columnas y como 3er parámetro el índice en el cual irá la o segmentación
+plt.title("Vol1 corte1 original") # se visualiza cada una de las máscaras y segmentaciones con imshow y el mapa de color "gray". Además, se le inserta el título con .tittle y se le quitan los ejes con axis("off)
 plt.imshow(vol1corte1,cmap="gray")
 plt.axis("off")
-plt.subplot(5,2,2)
+plt.subplot(6,2,2)
 plt.title("Vol3 corte1 original")
 plt.imshow(vol3corte1,cmap="gray")
 plt.axis("off")
-plt.subplot(5,2,3)
+plt.subplot(6,2,3)
 plt.title("Otsu vol1 corte1")
 plt.imshow(v1c1_binOtsu,cmap="gray")
 plt.axis("off")
-plt.subplot(5,2,4)
+plt.subplot(6,2,4)
 plt.title("Otsu vol3 corte1")
 plt.imshow(v3c1_binOtsu,cmap="gray")
 plt.axis("off")
-plt.subplot(5,2,5)
+plt.subplot(6,2,5)
 plt.title("Percentil60 vol1 corte1")
 plt.imshow(v1c1_percentil60,cmap="gray")
 plt.axis("off")
-plt.subplot(5,2,6)
+plt.subplot(6,2,6)
 plt.title("Percentil60 vol3 corte1")
 plt.imshow(v3c1_percentil60,cmap="gray")
 plt.axis("off")
-plt.subplot(5,2,7)
+plt.subplot(6,2,7)
 plt.title("Umbral175 vol1 corte1")
 plt.imshow(v1c1_umbral175,cmap="gray")
 plt.axis("off")
-plt.subplot(5,2,8)
+plt.subplot(6,2,8)
 plt.title("Umbral175 vol3 corte1")
 plt.imshow(v3c1_umbral175,cmap="gray")
 plt.axis("off")
-plt.subplot(5,2,9)
+plt.subplot(6,2,9)
 plt.title("Umbral arbitrario vol1 corte1")
 plt.imshow(v1c1_umbralArb,cmap="gray")
 plt.axis("off")
-plt.subplot(5,2,10)
+plt.subplot(6,2,10)
 plt.title("Umbral arbitrario vol3 corte1")
 plt.imshow(v3c1_umbralArb,cmap="gray")
 plt.axis("off")
+plt.subplot(6,2,11)
+plt.title("Corte1 anotación")
+plt.imshow(vol1_anotacion1,cmap="gray")
+plt.axis("off")
+plt.subplot(6,2,12)
+plt.title("Corte2 anotación")
+plt.imshow(vol3_anotacion1,cmap="gray")
+plt.axis("off")
 plt.tight_layout()
-plt.show()
+plt.show() # se muestra la figura optimizando el espacio con función tight_layout()
 
 ##
 plt.figure("HistogramaMonedas") # se crea figura "HistogramaMonedas" con un subplot de 1x2 para almacenar la imagen original y su respectivo histograma
