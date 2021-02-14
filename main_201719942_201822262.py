@@ -14,7 +14,7 @@ from sklearn.metrics import jaccard_score
 from skimage.color import rgb2gray
 import matplotlib.pyplot as plt
 
-input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
+#input("Press Enter to continue...") # input para continuar con el programa cuando usuario presione Enter cuando desee
 monedaURL="https://web.stanford.edu/class/ee368/Handouts/Lectures/Examples/11-Edge-Detection/Hough_Transform_Circles/coins.png"  # se asigna a una variable la url de la imagen que se trabajará en la segunda parte del laboratorio
 monedas = requests.get(monedaURL) # se accede a la imagen para su descarga por medio de la url con requests.get
 with open("Monedas", "wb") as f: # se trabaja con f como la abreviación para abrir un archivo para escritura "Monedas"
@@ -144,7 +144,7 @@ def Jaccard_index(masck_binaria,anotacion):
 	indice_Jaccard=interseccion/union
 	return indice_Jaccard
 
-carga_anotación=loadmat("coins_gt.mat")
+carga_anotación = loadmat("coins_gt.mat")
 matriz_anotacion=carga_anotación["gt"]
 #pruebas
 #"""
